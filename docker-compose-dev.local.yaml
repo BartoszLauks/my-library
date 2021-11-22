@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  my-library-mysql:
+    container_name: my-library-mysql-dev-local
+    ports:
+      - '33060:3306'
+  my-library-php:
+    container_name: my-library-php-dev-local
+    ports:
+      - '2222:22'
+    volumes:
+      - my-library-api-vendor-sync:/app/vendor
+      - my-library-api-app-sync:/app
+    environment:
+      APP_ENV: dev
+      APP_VERSION: dev
+      DATABASE_URL: mysql://root:@my-library-mysql:3306/my-library
+
+  my-library-nginx:
+    container_name: my-library-nginx-dev-local
+    ports:
+      - '9090:80'
+    volumes:
+      - my-library-api-vendor-sync:/app/vendor
+      - my-library-api-app-sync:/app
+
+volumes:
+  my-library-api-vendor-sync:
+    external: true
+  my-library-api-app-sync:
+    external: true

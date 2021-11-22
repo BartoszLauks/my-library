@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  my-library-mysql:
+    container_name: my-library-mysql-dev
+    ports:
+      - '33063:3306'
+
+  my-library-php:
+    container_name: my-library-php-dev
+    environment:
+      APP_ENV: dev
+      APP_VERSION: dev
+      DATABASE_URL: mysql://root:@my-library-mysql:3306/my-library_dev
+
+  my-library-nginx:
+    container_name: my-library-nginx-dev
+    ports:
+      - '8083:80'
