@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BookController!{% endblock %}
+
+{% block body %}
+    <h1>List of Books</h1>
+    {% if books|length == 0 %}
+        <h2>There are no new books. Go to "Offer a book" and they will propose a new book</h2>
+    {% endif %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>
+                Name
+            </td>
+            <td>
+                Author
+            </td>
+            <td>
+                Actions
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+                <td>
+                    {{ book.name }}
+                </td>
+                <td>
+                    {{ book.author }}
+                </td>
+                <td>
+                    <a href="{{ path('app_add_book_to_library',{book : book.id} ) }}">Add to library</a>
+                    <a href="{{ path('app_book_details',{book : book.id} ) }}">Details</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

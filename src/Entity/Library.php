@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=LibraryRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Library
 {
@@ -31,6 +32,11 @@ class Library
      * @ORM\ManyToOne(targetEntity=Book::class, inversedBy="libraries")
      */
     private $book;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $createdAt;
 
     public function getId(): ?int
     {
@@ -71,5 +77,30 @@ class Library
         $this->book = $book;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    public function __toString()
+    {
+        return $this->getBook()->getName();
     }
 }

@@ -6,10 +6,13 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface
 {
@@ -41,9 +44,26 @@ class User implements UserInterface
      */
     private $libraries;
 
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=OfferBook::class, mappedBy="user")
+     */
+    private $offerBook;
+
     public function __construct()
     {
         $this->libraries = new ArrayCollection();
+        $this->offerBook = new ArrayCollection();
+    }
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -155,5 +175,60 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * @return Collection|OfferBook[]
+     */
+    public function getOfferBook(): Collection
+    {
+        return $this->offerBook;
+    }
+
+    public function addOfferBook(OfferBook $offerBook): self
+    {
+        if (!$this->offerBook->contains($offerBook)) {
+            $this->offerBook[] = $offerBook;
+            $offerBook->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOfferBook(OfferBook $offerBook): self
+    {
+        if ($this->offerBook->removeElement($offerBook)) {
+            // set the owning side to null (unless already changed)
+            if ($offerBook->getUser() === $this) {
+                $offerBook->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getEmail();
     }
 }

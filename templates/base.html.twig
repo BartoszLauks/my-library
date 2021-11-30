@@ -6,7 +6,47 @@
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
-            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">}
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+                html,
+                body {
+                    font-family: 'Roboto', sans-serif;
+                    margin:0;
+                    padding:0;
+                    height:100%;
+                }
+                #container {
+                    min-height:100%;
+                    position:relative;
+                }
+                #header {
+                    position: relative;
+                    right: 0;
+                    left: 0;
+                }
+                #body {
+                    padding:10px;
+                    padding-bottom:60px;
+                    background-color: white;
+                    color: black;
+                }
+                #footer {
+                    position:absolute;
+                    bottom:0;
+                    width:100%;
+                    height:60px;   /* Height of the footer */
+                }
+                #login-register-container {
+                    margin: 10% auto auto;
+                    text-align: center;
+                    width: 500px;
+                }
+                .my-search {
+                    flex:1;
+                    flex-direction: row;
+                }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
@@ -16,8 +56,73 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-            <h1>Navbar</h1>
-        {% endblock %}
+        <div id="container">
+            <div id="header">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="{{ path('app_hello') }}">Home</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        My library
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ path('app_library') }}">All</a>
+                                        <a class="dropdown-item" href="{{ path('app_library_already_read') }}">Already Read</a>
+                                        <a class="dropdown-item" href="{{ path('app_library_while_reading') }}">While Reading</a>
+                                        <a class="dropdown-item" href="{{ path('app_library_not_read') }}">Not Read</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="{{ path('app_book') }}">New books</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="{{ path("app_offer_book") }}">Offer a book</a>
+                                </li>
+                                <li class="nav-item">
+                                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                                    <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                                    {% else %}
+                                    <a class="nav-link" href="{{ path('app_login') }}">Sign in</a>
+                                <li>
+                                    <a class="nav-link" href="{{ path('app_register') }}">Sign up !</a>
+                                </li>
+                                {% endif %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_admin') }}">Admin panel</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+
+                            {# <form class="d-flex">
+                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                            </form>
+                            #}
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div id="body">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {{ render(controller('App\\Controller\\SearchController::search')) }}
+                {% block body %}
+
+                {% endblock %}
+            </div>
+            <div id="footer">
+            </div>
+        </div>
     </body>
 </html>

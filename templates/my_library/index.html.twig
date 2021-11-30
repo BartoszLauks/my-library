@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MyLibraryController!{% endblock %}
+
+{% block body %}
+    <h1>List of My Library</h1>
+    {% if books|length == 0 %}
+        <h2>Upss... You don't have any book in your library. Go to "New Books" and add it</h2>
+    {% endif %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>
+                Name
+            </td>
+            <td>
+                Author
+            </td>
+            <td>
+                Action
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+                <td>
+                    {{ book.name }}
+                </td>
+                <td>
+                    {{ book.author }}
+                </td>
+                <td>
+                    <a href="{{ path('app_book_pages',{ book : book.id } ) }}">Pages&Details</a>
+                    <a href="{{ path("app_remove_from_library", { book : book.id } ) }}">Remove</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

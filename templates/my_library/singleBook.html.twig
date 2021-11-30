@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BookController!{% endblock %}
+
+{% block body %}
+    <h2>List of Books</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>
+                Name
+            </td>
+            <td>
+                Author
+            </td>
+            <td>
+                Publishing house
+            </td>
+            <td>
+                Place of publication
+            </td>
+            <td>
+                Date of publication
+            </td>
+            <td>
+                Description
+            </td>
+            <td>
+                Full pages of book
+            </td>
+            <td>
+                You are on the page
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {{ book.name }}
+                </td>
+                <td>
+                    {{ book.author }}
+                </td>
+                <td>
+                    {{ book.publishingHouse }}
+                </td>
+                <td>
+                    {{ book.placeOfPublication }}
+                </td>
+                <td>
+                    {{ book.DateOfPublication }}
+                </td>
+                <td>
+                    {{ book.description }}
+                </td>
+                <td>
+                    {{ book.page }}
+                </td>
+                <td>
+                    {{ form(form) }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

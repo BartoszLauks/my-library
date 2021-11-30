@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Library;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @method Library|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +16,39 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class LibraryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public const PAGINATOR_PER_PAGE = 5;
+
+    private $security;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        Security $security
+    ) {
         parent::__construct($registry, Library::class);
+        $this->security = $security;
+    }
+
+    public function getBooksPaginator(int $offset) : Paginator
+    {
+        $query = $this->createQueryBuilder('b')
+            ->orderBy('b.createdAt','DESC')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;
+
+        return new Paginator($query);
+    }
+
+    public function getUserLibrary()
+    {
+        return $this->createQueryBuilder('l')
+            ->select('identity(l.book)')
+            ->where('l.user = :user')
+            ->setParameter('user',$this->security->getUser())
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     // /**
