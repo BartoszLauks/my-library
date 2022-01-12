@@ -138,7 +138,7 @@ class MyLibraryController extends AbstractController
             {
                 $data->setPage($bookInLibrary->getBook()->getPage());
             }
-            $this->entityManager->persist($form);
+            $this->entityManager->persist($data);
             $this->entityManager->flush();
             $this->addFlash('success',"Changes in your library");
             return $this->redirect($this->generateUrl('app_hello'));
